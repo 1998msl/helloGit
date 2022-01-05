@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <!--添加字符编码过滤器-->
+    <filter>
+        <filter-name>encode</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encode</filter-name>
+        <!--拦截所有请求 包含.jsp-->
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--注册springmvc框架分发servlet-->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext-mvc.xml</param-value>
+        </init-param>
+        <!--是否在启动时加载这个servlet >=0表示启动时加载 <0表示使用时加载 正值越小优先级越高 配置多个servlet时候决定加载顺序-->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <!--servlet路径映射器-->
+    <servlet-mapping>
+        <!--拦截所有请求 不包含.jsp 默认的servlet其他不匹配就匹配这个servlet-->
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <!--注册spring监听器-->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <!--读取资源配置文件-->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+    <!--默认进入界面-->
+    <welcome-file-list>
+        <!--先检查webapp下是否有index.jsp存在就返回，不存在就就通过dispatchsevlrt根据servlet-mapping区匹配controller-->
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
